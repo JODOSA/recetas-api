@@ -1,5 +1,6 @@
 package com.recetas.recetasapi.service;
 
+import com.recetas.recetasapi.entity.Ingredient;
 import com.recetas.recetasapi.entity.Recipe;
 import com.recetas.recetasapi.repository.RecipeRepository;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +24,12 @@ public class RecipeService {
     }
 
     public Recipe createRecipe(Recipe recipe){
+        // Asignar la receta a cada ingrediente
+        if(recipe.getIngredients() != null){
+            for(Ingredient ingredient : recipe.getIngredients()){
+                ingredient.setRecipe(recipe);
+            }
+        }
         return recipeRepository.save(recipe);
     }
 
