@@ -1,210 +1,425 @@
-# 🍽️ Recetas API
+# 🍳 Recetas API - Spring Boot
 
-API REST profesional para gestión de recetas de cocina, construida con Spring Boot siguiendo las mejores prácticas de desarrollo.
+API REST completa para gestión de recetas de cocina con sistema de usuarios, favoritos, calificaciones y más.
 
-## 🎯 Objetivo del proyecto
+---
 
-Crear una aplicación completa y profesional de recetas que incluya:
-- ✅ Backend REST API con Spring Boot (Java)
-- 🔄 Frontend PWA con Vue.js + TypeScript (pendiente)
-- 🧪 Testing profesional (pendiente)
-- 🐳 Docker + CI/CD (pendiente)
-- 🚀 Deploy en producción (pendiente)
+## 📋 Tabla de Contenidos
+
+- [Descripción del Proyecto](#-descripción-del-proyecto)
+- [Tecnologías Utilizadas](#-tecnologías-utilizadas)
+- [Modelo de Datos](#-modelo-de-datos)
+- [Progreso del Proyecto](#-progreso-del-proyecto)
+- [Configuración y Ejecución](#-configuración-y-ejecución)
+- [Endpoints API](#-endpoints-api)
+- [Roadmap](#-roadmap)
+
+---
+
+## 🎯 Descripción del Proyecto
+
+Aplicación completa y profesional de recetas que incluye:
+- ✅ Backend REST API con Spring Boot (Java 21)
+- 🔄 Frontend PWA con Vue.js + TypeScript *(próximamente)*
+- 🧪 Testing profesional *(próximamente)*
+- 🐳 Docker + CI/CD
+- ☁️ AWS S3 para almacenamiento de imágenes *(próximamente)*
+- 🚀 Deploy en producción *(próximamente)*
 
 **La aplicación será una PWA (Progressive Web App)**, funcionando en cualquier dispositivo: PC, tablet y móvil.
 
-## 🛠️ Tecnologías utilizadas
+---
 
-### Backend (Actual)
-- **Java 21**
-- **Spring Boot 3.x**
-- **Spring Data JPA** (ORM)
-- **MySQL 8.0** (Base de datos)
-- **Lombok** (Reducción de boilerplate)
-- **Maven** (Gestión de dependencias)
+## 🛠️ Tecnologías Utilizadas
 
-### Frontend (Próximamente)
-- **Vue.js 3** (Composition API)
-- **TypeScript**
-- **Vite** (Build tool)
-- **PWA** (Instalable en todos los dispositivos)
+### Backend
+- **Java 21** - Última versión LTS
+- **Spring Boot 3.x** - Framework principal
+- **Spring Data JPA** - ORM para persistencia
+- **MySQL 8.0** - Base de datos relacional
+- **Lombok** - Reducción de código boilerplate
+- **Maven** - Gestión de dependencias
+- **Docker** - Contenedorización
 
-### Herramientas de desarrollo
+### Herramientas de Desarrollo
 - **IntelliJ IDEA Ultimate**
-- **Docker** (MySQL containerizado)
-- **Postman** (Testing de API)
-- **Git + GitHub**
+- **Docker Desktop**
+- **Postman** - Testing de API
+- **Git + GitHub** - Control de versiones
 
-## ⚡ Buenas prácticas implementadas
+### Próximas Tecnologías
+- **Spring Security** + JWT - Autenticación y autorización
+- **AWS S3** - Almacenamiento de imágenes
+- **Vue.js 3** + TypeScript - Frontend
+- **Flyway/Liquibase** - Migraciones de base de datos
 
-- ✅ **Arquitectura en capas** (Controller → Service → Repository → Entity)
-- ✅ **Principios SOLID**
-- ✅ **Código limpio** y legible
-- ✅ **Nomenclatura en inglés** (variables, métodos, clases)
-- ✅ **Separación de responsabilidades**
-- ✅ **Inyección de dependencias**
-- ✅ **Uso de DTOs** (preparado para implementar)
-- ✅ **Manejo de errores** con ResponseEntity
-- ✅ **Commits semánticos** (conventional commits)
+---
 
-## 📋 Funcionalidades actuales
+## 🗂️ Modelo de Datos
 
-### Endpoints implementados:
+### Entidades Implementadas
 
-| Método | Endpoint | Descripción | Status |
-|--------|----------|-------------|--------|
-| GET | `/api/recipes` | Obtener todas las recetas | 200 OK |
-| GET | `/api/recipes/{id}` | Obtener receta por ID | 200 OK / 404 |
-| POST | `/api/recipes` | Crear nueva receta | 201 Created |
-| PUT | `/api/recipes/{id}` | Actualizar receta | 200 OK |
-| DELETE | `/api/recipes/{id}` | Eliminar receta | 204 No Content |
-
-### Modelo de datos:
-```json
-{
-  "id": 1,
-  "name": "Paella Valenciana",
-  "description": "Auténtica paella valenciana con pollo y conejo",
-  "preparationTime": 30,
-  "cookingTime": 45,
-  "servings": 6
-}
+#### **Recipe** (Receta)
+```java
+- id (Long)
+- name (String)
+- description (String)
+- preparationTime (Integer)
+- cookingTime (Integer)
+- servings (Integer)
+- difficulty (Enum: EASY, MEDIUM, HARD)
+- isPublic (Boolean)
+- imageUrl (String) - Para AWS S3
+- createdAt (LocalDateTime)
+- updatedAt (LocalDateTime)
+- author (User)
+- ingredients (List<Ingredient>)
+- steps (List<Step>)
+- favorites (List<Favorite>)
+- ratings (List<Rating>)
+- recipeCategories (List<RecipeCategory>)
+- recipeTags (List<RecipeTag>)
 ```
 
-## 🚀 Cómo ejecutar el proyecto
-
-### Prerrequisitos:
-- Java 21 o superior
-- Docker Desktop
-- Maven (incluido en IntelliJ)
-
-### Paso 1: Levantar MySQL con Docker
-```bash
-docker run --name recetas-mysql \
-  -e MYSQL_ROOT_PASSWORD=root123 \
-  -e MYSQL_DATABASE=recetas_db \
-  -p 3306:3306 \
-  -d mysql:8.0
+#### **User** (Usuario)
+```java
+- id (Long)
+- username (String, unique)
+- email (String, unique)
+- password (String) - Encriptada
+- firstName (String)
+- lastName (String)
+- role (Enum: USER, ADMIN)
+- createdAt (LocalDateTime)
 ```
 
-### Paso 2: Clonar el repositorio
+#### **Ingredient** (Ingrediente)
+```java
+- id (Long)
+- name (String)
+- quantity (String)
+- recipe (Recipe)
+```
+
+#### **Step** (Paso de preparación)
+```java
+- id (Long)
+- stepNumber (Integer)
+- description (String)
+- imageUrl (String)
+- recipe (Recipe)
+```
+
+#### **Category** (Categoría)
+```java
+- id (Long)
+- name (String, unique)
+- description (String)
+- slug (String, unique)
+```
+
+#### **Tag** (Etiqueta)
+```java
+- id (Long)
+- name (String, unique)
+```
+
+#### **Favorite** (Favorito)
+```java
+- id (Long)
+- user (User)
+- recipe (Recipe)
+- createdAt (LocalDateTime)
+- Constraint: Un usuario solo puede marcar una receta como favorita una vez
+```
+
+#### **Rating** (Calificación)
+```java
+- id (Long)
+- user (User)
+- recipe (Recipe)
+- stars (Integer: 1-5)
+- comment (String)
+- createdAt (LocalDateTime)
+- Constraint: Un usuario solo puede calificar una receta una vez
+```
+
+#### **RecipeCategory** (Relación Recipe-Category)
+```java
+- id (Long)
+- recipe (Recipe)
+- category (Category)
+```
+
+#### **RecipeTag** (Relación Recipe-Tag)
+```java
+- id (Long)
+- recipe (Recipe)
+- tag (Tag)
+```
+
+### Diagrama de Relaciones
+```
+                    ┌─────────┐
+                    │  User   │
+                    └────┬────┘
+                         │
+              ┌──────────┴──────────┐
+              │                     │
+         (author)              (favoritos/ratings)
+              │                     │
+         ┌────▼─────┐          ┌───▼────┐
+         │  Recipe  │◄─────────┤Favorite│
+         └────┬─────┘          └────────┘
+              │
+    ┌─────────┼─────────┬─────────┬──────────┐
+    │         │         │         │          │
+┌───▼───┐ ┌──▼──┐  ┌──▼───┐ ┌───▼────┐ ┌──▼─────┐
+│Ingred.│ │Step │  │Rating│ │RecipeCa│ │RecipeT │
+└───────┘ └─────┘  └──────┘ │tegory  │ │ag      │
+                             └───┬────┘ └───┬────┘
+                                 │          │
+                            ┌────▼───┐  ┌──▼──┐
+                            │Category│  │ Tag │
+                            └────────┘  └─────┘
+```
+
+---
+
+## ✅ Progreso del Proyecto
+
+### FASE 1: Modelo de Datos ✅ COMPLETADA
+- [x] Diseño completo de entidades
+- [x] 10 entidades creadas
+- [x] 2 ENUMs (Difficulty, UserRole)
+- [x] Relaciones OneToMany, ManyToOne, ManyToMany
+- [x] Constraints de unicidad
+- [x] Timestamps automáticos (CreationTimestamp, UpdateTimestamp)
+- [x] Cascadas y orphan removal
+- [x] Base de datos MySQL funcionando con Docker
+- [x] Todas las tablas creadas correctamente
+
+### FASE 2: Repositories y Services 🔄 EN PROGRESO
+- [ ] UserRepository + UserService
+- [ ] CategoryRepository + CategoryService
+- [ ] TagRepository + TagService
+- [ ] RecipeService actualizado (con nuevas relaciones)
+- [ ] StepService
+- [ ] FavoriteService
+- [ ] RatingService
+
+### FASE 3: Controllers y Endpoints 📋 PENDIENTE
+- [ ] UserController
+- [ ] CategoryController
+- [ ] TagController
+- [ ] RecipeController actualizado
+- [ ] FavoriteController
+- [ ] RatingController
+- [ ] Validaciones con Bean Validation
+- [ ] Manejo de errores global
+
+### FASE 4: AWS S3 Integration ☁️ PENDIENTE
+- [ ] Configurar cuenta AWS (free tier)
+- [ ] Crear bucket S3
+- [ ] AWS SDK para Java
+- [ ] Servicio de upload de imágenes
+- [ ] Endpoint para subir imágenes
+- [ ] URLs firmadas (signed URLs)
+- [ ] Validación de tipos y tamaños
+
+### FASE 5: Spring Security + JWT 🔐 PENDIENTE
+- [ ] Configuración de Spring Security
+- [ ] Autenticación con JWT
+- [ ] Endpoint de registro
+- [ ] Endpoint de login
+- [ ] Protección de endpoints
+- [ ] Roles y permisos
+
+### FASE 6: Testing 🧪 PENDIENTE
+- [ ] Tests unitarios (JUnit 5)
+- [ ] Tests de integración
+- [ ] MockMvc para controllers
+- [ ] Testcontainers para MySQL
+
+### FASE 7: Frontend PWA 🎨 PENDIENTE
+- [ ] Vue.js 3 + TypeScript
+- [ ] Vite como build tool
+- [ ] Configuración PWA
+- [ ] Integración con backend
+
+### FASE 8: Deploy 🚀 PENDIENTE
+- [ ] Docker Compose para producción
+- [ ] CI/CD con GitHub Actions
+- [ ] Deploy en cloud (Railway/Render/AWS)
+
+---
+
+## ⚙️ Configuración y Ejecución
+
+### Prerrequisitos
+- **Java 21** instalado
+- **Docker Desktop** instalado y corriendo
+- **IntelliJ IDEA** (recomendado)
+- **Maven** (incluido en IntelliJ)
+
+### Pasos para ejecutar
+
+1. **Clonar el repositorio**
 ```bash
 git clone https://github.com/JODOSA/recetas-api.git
 cd recetas-api
 ```
 
-### Paso 3: Configurar `application.properties`
+2. **Iniciar MySQL con Docker**
+```bash
+docker run -d \
+  --name recetas-mysql \
+  -e MYSQL_ROOT_PASSWORD=root123 \
+  -e MYSQL_DATABASE=recetas_db \
+  -p 3306:3306 \
+  mysql:8.0
+```
 
-El archivo ya está configurado para MySQL local:
+3. **Configurar application.properties**
+
+El archivo ya está configurado en `src/main/resources/application.properties`:
 ```properties
+spring.application.name=recetas-api
 spring.datasource.url=jdbc:mysql://localhost:3306/recetas_db
 spring.datasource.username=root
 spring.datasource.password=root123
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.show-sql=true
+spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.MySQLDialect
 ```
 
-### Paso 4: Ejecutar la aplicación
-
-**Opción A: Desde IntelliJ**
-- Abrir el proyecto
-- Run `RecetasApiApplication.java`
-
-**Opción B: Desde terminal**
+4. **Ejecutar la aplicación**
 ```bash
-./mvnw spring-boot:run
+mvn spring-boot:run
 ```
 
-La API estará disponible en: `http://localhost:8080`
+O desde IntelliJ: Click en el botón verde ▶️
 
-## 🧪 Probar la API
-
-### Crear una receta:
-```bash
-POST http://localhost:8080/api/recipes
-Content-Type: application/json
-
-{
-  "name": "Gazpacho Andaluz",
-  "description": "Sopa fría de tomate perfecta para el verano",
-  "preparationTime": 15,
-  "cookingTime": 0,
-  "servings": 4
-}
+5. **Verificar que funciona**
+```
+http://localhost:8080
 ```
 
-### Obtener todas las recetas:
-```bash
-GET http://localhost:8080/api/recipes
-```
+---
 
-## 📁 Estructura del proyecto
-```
-src/main/java/com/recetas/recetasapi/
-├── entity/
-│   └── Recipe.java           # Entidad JPA (modelo de datos)
-├── repository/
-│   └── RecipeRepository.java # Capa de acceso a datos
-├── service/
-│   └── RecipeService.java    # Lógica de negocio
-├── controller/
-│   └── RecipeController.java # Endpoints REST
-└── RecetasApiApplication.java # Clase principal
-```
+## 📡 Endpoints API
 
-### Arquitectura implementada:
-```
-HTTP Request
-    ↓
-Controller (Recibe request, valida, devuelve response)
-    ↓
-Service (Lógica de negocio, validaciones, transformaciones)
-    ↓
-Repository (Acceso a base de datos)
-    ↓
-MySQL Database
-```
+### Estado actual: CRUD básico de Recipe + Ingredient
 
-## 🔜 Próximos pasos
+| Método | Endpoint | Descripción | Estado |
+|--------|----------|-------------|--------|
+| GET | `/api/recipes` | Obtener todas las recetas | ✅ |
+| GET | `/api/recipes/{id}` | Obtener receta por ID | ✅ |
+| POST | `/api/recipes` | Crear nueva receta con ingredientes | ✅ |
+| PUT | `/api/recipes/{id}` | Actualizar receta | ✅ |
+| DELETE | `/api/recipes/{id}` | Eliminar receta | ✅ |
 
-### Backend:
-- [ ] Añadir entidad Ingredient (relación OneToMany)
-- [ ] Añadir entidad Category (relación ManyToMany)
-- [ ] Sistema de usuarios (User entity)
-- [ ] Autenticación y autorización (Spring Security + JWT)
-- [ ] Búsqueda avanzada y filtros
-- [ ] Upload de imágenes de recetas
-- [ ] Validaciones con Bean Validation (@Valid)
-- [ ] DTOs para separar modelo de presentación
-- [ ] Manejo global de excepciones (@ControllerAdvice)
-- [ ] Testing unitario e integración (JUnit + Mockito)
+### Próximos endpoints (Fase 3)
 
-### Frontend:
-- [ ] Setup Vue.js 3 + TypeScript + Vite
-- [ ] Diseño responsive (mobile-first)
-- [ ] Consumo de API REST (Axios)
-- [ ] State management (Pinia)
-- [ ] Routing (Vue Router)
-- [ ] Convertir en PWA (instalable)
-- [ ] Service Workers (funcionalidad offline)
+**Users:**
+- POST `/api/auth/register` - Registro
+- POST `/api/auth/login` - Login
+- GET `/api/users/me` - Perfil del usuario
 
-### DevOps:
-- [ ] Dockerfile para backend
-- [ ] Docker Compose (app + MySQL)
-- [ ] Testing automatizado
-- [ ] CI/CD con GitHub Actions
-- [ ] Deploy backend en Railway/Render
-- [ ] Deploy frontend en Vercel/Netlify
+**Categories:**
+- GET `/api/categories` - Listar categorías
+- POST `/api/categories` - Crear categoría (ADMIN)
 
-## 👨‍💻 Autor
+**Tags:**
+- GET `/api/tags` - Listar tags
+- POST `/api/tags` - Crear tag (ADMIN)
+
+**Favorites:**
+- GET `/api/users/me/favorites` - Mis favoritos
+- POST `/api/recipes/{id}/favorite` - Marcar como favorito
+- DELETE `/api/recipes/{id}/favorite` - Quitar de favoritos
+
+**Ratings:**
+- GET `/api/recipes/{id}/ratings` - Calificaciones de una receta
+- POST `/api/recipes/{id}/ratings` - Calificar receta
+- GET `/api/recipes/{id}/average-rating` - Promedio de calificaciones
+
+---
+
+## 🗺️ Roadmap
+
+### Semana 1-2 ✅ COMPLETADA
+- Setup inicial del proyecto
+- Entidad Recipe + Ingredient
+- CRUD básico funcionando
+- MySQL con Docker
+- Git + GitHub
+
+### Semana 3-4 ✅ COMPLETADA
+- Diseño completo del modelo de datos
+- 10 entidades + 2 ENUMs
+- Todas las relaciones implementadas
+- Base de datos funcionando
+
+### Semana 5-6 🔄 EN PROGRESO
+- Repositories y Services
+- Controllers y endpoints
+- Validaciones
+
+### Semana 7-8
+- Spring Security + JWT
+- Autenticación completa
+
+### Semana 9-10
+- AWS S3 Integration
+- Upload de imágenes
+
+### Semana 11-12
+- Testing completo
+- Frontend básico con Vue.js
+
+### Semana 13-14
+- PWA completa
+- Deploy en producción
+
+---
+
+## 🏆 Buenas Prácticas Implementadas
+
+- ✅ **Arquitectura en capas** (Entity → Repository → Service → Controller)
+- ✅ **Principios SOLID**
+- ✅ **Código limpio y legible**
+- ✅ **Nomenclatura en inglés**
+- ✅ **Separación de responsabilidades**
+- ✅ **Inyección de dependencias**
+- ✅ **Uso de DTOs** (próximamente)
+- ✅ **Manejo de errores**
+- ✅ **Commits semánticos** (Conventional Commits)
+- ✅ **Git Flow** con ramas feature
+- ✅ **Documentación actualizada**
+
+---
+
+## 📚 Recursos de Aprendizaje
+
+- [Spring Boot Documentation](https://docs.spring.io/spring-boot/docs/current/reference/html/)
+- [Spring Data JPA](https://docs.spring.io/spring-data/jpa/docs/current/reference/html/)
+- [AWS S3 Java SDK](https://docs.aws.amazon.com/sdk-for-java/)
+- [JWT Authentication](https://jwt.io/)
+
+---
+
+## 👤 Autor
 
 **Joaquín Domínguez**
 - GitHub: [@JODOSA](https://github.com/JODOSA)
 
-## 📝 Licencia
+---
 
-Este proyecto es de código abierto y está disponible para aprendizaje.
+## 📄 Licencia
+
+Este proyecto es de código abierto y está disponible bajo la licencia MIT.
 
 ---
 
-**Estado del proyecto:** 🟢 En desarrollo activo  
-**Última actualización:** Febrero 2026  
-**Versión actual:** v0.1.0 (Backend CRUD básico)
+**⭐ Si te gusta este proyecto, dale una estrella en GitHub!**
