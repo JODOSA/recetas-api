@@ -17,3 +17,8 @@
 /docker/nginx/ssl/server.crt
 /docker/nginx/ssl/server.key
 ###> docker ###
+
+###> phpunit/phpunit ###
+/phpunit.xml
+/.phpunit.cache/
+###< phpunit/phpunit ###
