@@ -1,0 +1,19 @@
+###> phpstorm ###
+/.idea/
+###> phpstorm ###
+
+###> symfony/framework-bundle ###
+/.env.local
+/.env.local.php
+/.env.*.local
+/.env.dev
+/config/secrets/prod/prod.decrypt.private.php
+/public/bundles/
+/var/
+/vendor/
+###< symfony/framework-bundle ###
+
+###> docker ###
+/docker/nginx/ssl/server.crt
+/docker/nginx/ssl/server.key
+###> docker ###

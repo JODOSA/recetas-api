@@ -1,0 +1,41 @@
+FROM php:8.4-fpm
+
+# Instalamos dependencias del sistema
+RUN apt-get update && apt-get install -y \
+    git \
+    curl \
+    vim \
+    unzip \
+    libzip-dev \
+    libsodium-dev \
+    librabbitmq-dev \
+    libpq-dev \
+    libicu-dev \
+    ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
+
+# Instala extensiones de PHP nativas
+RUN docker-php-ext-install \
+    intl \
+    pdo \
+    pdo_pgsql \
+    pgsql \
+    sodium \
+    zip
+
+# Instala extensiones vía PECL
+RUN pecl install xdebug amqp \
+    && docker-php-ext-enable xdebug amqp
+
+# Directorio de trabajo
+WORKDIR /var/www/html
+
+# Instala Composer
+RUN curl -sS https://getcomposer.org/installer | php \
+    && mv composer.phar /usr/local/bin/composer \
+    && chown -R www-data:www-data /var/www/html
+
+# Instala Symfony CLI
+RUN curl -k -sS https://get.symfony.com/cli/installer | bash \
+    && mv /root/.symfony*/bin/symfony /usr/local/bin/symfony \
+    && chmod +x /usr/local/bin/symfony
