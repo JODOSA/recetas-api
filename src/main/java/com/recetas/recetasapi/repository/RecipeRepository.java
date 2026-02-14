@@ -1,10 +1,14 @@
 package com.recetas.recetasapi.repository;
 
 import com.recetas.recetasapi.entity.Recipe;
-import org.springframework.data.jpa.repository.JpaRepository;
+import com.recetas.recetasapi.enums.Difficulty;
+import com.recetas.recetasapi.repository.base.BaseRepository;
 import org.springframework.stereotype.Repository;
 
-@Repository
-public interface RecipeRepository extends JpaRepository<Recipe,Long>{
-    
+import java.util.List;
+
+public interface RecipeRepository extends BaseRepository<Recipe,Long> {
+    List<Recipe> findByDifficulty(Difficulty difficulty);
+    List<Recipe> findByAuthorId(Long authorId);
+    List<Recipe> findByIsPublic(Boolean isPublic);
 }
