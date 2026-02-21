@@ -25,7 +25,7 @@ public class User {
     private Long id;
 
     @NotBlank(message = "El username no puede estar vacío")
-    @Size(min = 3, max = 50, message = "El username debe tener entre 2 y 50 caracteres")
+    @Size(min = 3, max = 50, message = "El username debe tener entre 3 y 50 caracteres")
     @Column(nullable = false, unique = true, length = 50)
     private String username;
 
