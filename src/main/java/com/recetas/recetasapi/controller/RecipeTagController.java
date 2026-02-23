@@ -2,6 +2,7 @@ package com.recetas.recetasapi.controller;
 
 import com.recetas.recetasapi.entity.RecipeTag;
 import com.recetas.recetasapi.service.RecipeTagService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -32,13 +33,13 @@ public class RecipeTagController {
     }
 
     @PostMapping
-    public ResponseEntity<RecipeTag> createRecipeTag(@RequestBody RecipeTag recipeTag) {
+    public ResponseEntity<RecipeTag> createRecipeTag(@Valid @RequestBody RecipeTag recipeTag) {
         RecipeTag saveTag = recipeTagService.save(recipeTag);
         return ResponseEntity.status(HttpStatus.CREATED).body(saveTag);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<RecipeTag> updateRecipeTag(@PathVariable Long id, @RequestBody RecipeTag recipeTag) {
+    public ResponseEntity<RecipeTag> updateRecipeTag(@PathVariable Long id, @Valid @RequestBody RecipeTag recipeTag) {
         if (!recipeTagService.existsById(id)) {
             return ResponseEntity.notFound().build();
         }

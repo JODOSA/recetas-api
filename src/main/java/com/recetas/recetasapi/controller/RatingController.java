@@ -4,6 +4,7 @@ import com.recetas.recetasapi.entity.Rating;
 import com.recetas.recetasapi.service.RatingService;
 import com.recetas.recetasapi.service.RecipeService;
 import com.recetas.recetasapi.service.UserService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -34,13 +35,13 @@ public class RatingController {
     }
 
     @PostMapping
-    public ResponseEntity<Rating> createRating(@RequestBody Rating rating) {
+    public ResponseEntity<Rating> createRating(@Valid @RequestBody Rating rating) {
         Rating savedRating = ratingService.save(rating);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedRating);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Rating> updateRating(@PathVariable Long id, @RequestBody Rating rating) {
+    public ResponseEntity<Rating> updateRating(@PathVariable Long id, @Valid @RequestBody Rating rating) {
         if (!ratingService.existsById(id)) {
             return ResponseEntity.notFound().build();
         }

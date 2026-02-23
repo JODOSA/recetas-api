@@ -1,6 +1,10 @@
 package com.recetas.recetasapi.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -30,13 +34,17 @@ public class Rating {
     @JoinColumn(name = "recipe_id", nullable = false)
     private Recipe recipe;
 
+    @NotNull(message = "La calificación no puede ser nula")
+    @Min(value = 1, message = "La calificación mínima es 1 estrella")
+    @Max(value = 5, message = "La calificación máxima es 5 estrellas")
     @Column(nullable = false)
     private Integer stars;
 
+    @Size(max = 500, message = "El comentario no puede superar los 500 caracteres")
     @Column(columnDefinition = "TEXT")
     private String comment;
 
     @CreationTimestamp
-    @Column(updatable = false)
+    @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 }

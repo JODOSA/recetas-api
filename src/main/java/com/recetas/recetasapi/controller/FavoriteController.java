@@ -2,6 +2,7 @@ package com.recetas.recetasapi.controller;
 
 import com.recetas.recetasapi.entity.Favorite;
 import com.recetas.recetasapi.service.FavoriteService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -32,13 +33,13 @@ public class FavoriteController {
 }
 
 @PostMapping
-    public ResponseEntity<Favorite> createFavorite(@RequestBody Favorite favorite) {
+    public ResponseEntity<Favorite> createFavorite(@Valid @RequestBody Favorite favorite) {
         Favorite savedFavorite = favoriteService.save(favorite);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedFavorite);
 }
 
 @PutMapping("/{id}")
-    public ResponseEntity<Favorite> updateFavorite(@PathVariable Long id, @RequestBody Favorite favorite) {
+    public ResponseEntity<Favorite> updateFavorite(@PathVariable Long id, @Valid @RequestBody Favorite favorite) {
         if (!favoriteService.existsById(id)) {
             return ResponseEntity.notFound().build();
         }

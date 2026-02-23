@@ -2,6 +2,7 @@ package com.recetas.recetasapi.controller;
 
 import com.recetas.recetasapi.entity.Ingredient;
 import com.recetas.recetasapi.service.IngredientService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -32,13 +33,13 @@ public class IngredientController {
     }
 
     @PostMapping
-    public ResponseEntity<Ingredient> createIngredient(@RequestBody Ingredient ingredient) {
+    public ResponseEntity<Ingredient> createIngredient(@Valid @RequestBody Ingredient ingredient) {
         Ingredient savedIngredient = ingredientService.save(ingredient);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedIngredient);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Ingredient> updateIngredient(@PathVariable Long id, @RequestBody Ingredient ingredient) {
+    public ResponseEntity<Ingredient> updateIngredient(@PathVariable Long id, @Valid @RequestBody Ingredient ingredient) {
         if (!ingredientService.existsById(id)) {
             return ResponseEntity.notFound().build();
         }
